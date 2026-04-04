@@ -41,3 +41,21 @@ class QuizGame:
                 pass
         if not self.quizzes:
             self.quizzes = [Quiz(**quiz) for quiz in DEFAULT_QUIZZES]
+
+    def play_quiz(self):
+        print("=" * 30)
+        print("퀴즈를 시작합니다!")
+        print("=" * 30)
+        score = 0
+        for quiz in self.quizzes:
+            quiz.display_quiz()
+            answer = input("정답: ")
+            if quiz.check_answer(answer):
+                print("정답입니다!")
+                score += 1
+            else:
+                print("아쉽지만 오답입니다...")
+            print()
+        print("=" * 30)
+        print(f"최종 점수: {score}")
+        print("=" * 30)
