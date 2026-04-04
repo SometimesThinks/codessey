@@ -2,6 +2,8 @@ from models import QuizGame
 
 if __name__ == "__main__":
     game = QuizGame()
+    game.load_quizzes()
+
     while True:
         try:
             game.show_menu()

@@ -1,3 +1,7 @@
+import os
+from constants import FILE_PATH, DEFAULT_QUIZZES
+
+
 class Quiz:
     def __init__(self, question, choices, answer):
         self.question = question
@@ -28,3 +32,12 @@ class QuizGame:
         print("4. 점수 확인")
         print("5. 종료")
         print("=" * 30)
+
+    def load_quizzes(self):
+        if os.path.isfile(FILE_PATH):
+            try:
+                pass
+            except Exception:
+                pass
+        if not self.quizzes:
+            self.quizzes = [Quiz(**quiz) for quiz in DEFAULT_QUIZZES]
