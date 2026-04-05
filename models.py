@@ -24,6 +24,7 @@ class QuizGame:
         self.quizzes = []
         self.best_score = 0
 
+    # 메뉴 출력
     def show_menu(self):
         print("=" * 30)
         print("파이썬 기초 문법 퀴즈")
@@ -35,6 +36,7 @@ class QuizGame:
         print("5. 종료")
         print("=" * 30)
 
+    # 퀴즈 불러오기
     def load_quizzes(self):
         if os.path.isfile(FILE_PATH):
             try:
@@ -44,6 +46,7 @@ class QuizGame:
         if not self.quizzes:
             self.quizzes = [quiz for quiz in DEFAULT_QUIZZES]
 
+    # 퀴즈 풀기
     def play_quiz(self):
         print("=" * 30)
         print("퀴즈를 시작합니다!")
@@ -63,6 +66,7 @@ class QuizGame:
         print(f"최종 점수: {score}")
         print("=" * 30)
 
+    # 퀴즈 추가
     def add_quiz(self):
         print("=" * 30)
         print("퀴즈를 추가합니다!")
@@ -91,3 +95,16 @@ class QuizGame:
             return True
         except Exception:
             return False
+
+    # 퀴즈 목록
+    def show_quizzes(self):
+        print("=" * 30)
+        print("퀴즈 목록")
+        print("=" * 30)
+        for i, quiz in enumerate(self.quizzes):
+            print(f"{i + 1}. {quiz['question']}")
+            for j, choice in enumerate(quiz["choices"]):
+                print(f"   {j + 1}. {choice}")
+            print(f"   정답: {quiz['answer']}")
+            print()
+        print("=" * 30)
