@@ -6,25 +6,23 @@ from models import QuizGame
 def main():
     game = QuizGame()
     game.load_quizzes()
-    while True:
-        game.show_menu()
-        choice = get_input("메뉴를 선택하세요: ", 1, 5)
-        print()
-        if choice == 1:
-            game.play_quiz()
-        elif choice == 2:
-            game.add_quiz()
-        elif choice == 3:
-            game.show_quizzes()
-        elif choice == 4:
-            game.show_best_score()
-        elif choice == 5:
-            break
 
-
-if __name__ == "__main__":
     try:
-        main()
+        while True:
+            print()
+            game.show_menu()
+            choice = get_input("메뉴를 선택하세요: ", 1, 5)
+            print()
+            if choice == "1":
+                game.play_quiz()
+            elif choice == "2":
+                game.add_quiz()
+            elif choice == "3":
+                game.show_quizzes()
+            elif choice == "4":
+                game.show_best_score()
+            elif choice == "5":
+                break
     # KeyboardInterrupt 예외 처리(Ctrl + C가 인터럽트를 의미하기 때문)
     except KeyboardInterrupt as e:
         print(f"\n{type(e).__name__}으로 인해 프로그램이 종료되었습니다.")
@@ -33,3 +31,9 @@ if __name__ == "__main__":
     except EOFError as e:
         print(f"\n{type(e).__name__}으로 인해 프로그램이 종료되었습니다.")
         sys.exit()
+    finally:
+        game.save_quizzes()
+
+
+if __name__ == "__main__":
+    main()
