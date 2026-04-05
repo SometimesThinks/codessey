@@ -22,7 +22,7 @@ class Quiz:
 class QuizGame:
     def __init__(self):
         self.quizzes = []
-        self.best_score = 0
+        self.best_score = None
 
     # 메뉴 출력
     def show_menu(self):
@@ -32,7 +32,7 @@ class QuizGame:
         print("1. 퀴즈 풀기")
         print("2. 퀴즈 추가")
         print("3. 퀴즈 목록")
-        print("4. 점수 확인")
+        print("4. 최고 점수 확인")
         print("5. 종료")
         print("=" * 30)
 
@@ -40,9 +40,12 @@ class QuizGame:
     def load_quizzes(self):
         if os.path.isfile(FILE_PATH):
             try:
-                pass
+                with open(FILE_PATH, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    self.quizzes = data["quizzes"]
+                    self.best_score = data["best_score"]
             except Exception:
-                pass
+                print("파일을 불러오는 중 오류가 발생했습니다. 기본 퀴즈로 대체합니다.")
         if not self.quizzes:
             self.quizzes = [quiz for quiz in DEFAULT_QUIZZES]
 
@@ -63,7 +66,10 @@ class QuizGame:
                 print("아쉽지만 오답입니다...")
             print()
         print("=" * 30)
-        print(f"최종 점수: {score}")
+        print(f"정답 개수: {score}")
+        # 최고 점수 업데이트
+        if self.update_best_score(score):
+            print("최고 점수 갱신!")
         print("=" * 30)
 
     # 퀴즈 추가
@@ -90,8 +96,12 @@ class QuizGame:
     # 퀴즈 변경 사항 저장(추가, 삭제)
     def save_quizzes(self):
         try:
+            data = {
+                "best_score": self.best_score,
+                "quizzes": self.quizzes,
+            }
             with open(FILE_PATH, "w", encoding="utf-8") as f:
-                json.dump(self.quizzes, f, ensure_ascii=False, indent=4)
+                json.dump(data, f, ensure_ascii=False, indent=4)
             return True
         except Exception:
             return False
@@ -108,3 +118,20 @@ class QuizGame:
             print(f"   정답: {quiz['answer']}")
             print()
         print("=" * 30)
+
+    # 점수 확인
+    def show_best_score(self):
+        print("=" * 30)
+        if self.best_score is None:
+            print("아직 퀴즈 풀이 기록이 없습니다.")
+        else:
+            print(f"최고 점수 : {self.best_score}")
+        print("=" * 30)
+
+    # 최고 점수 업데이트
+    def update_best_score(self, score):
+        if self.best_score is None or score > self.best_score:
+            self.best_score = score
+            self.save_quizzes()
+            return True
+        return False
