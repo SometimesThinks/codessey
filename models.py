@@ -56,7 +56,8 @@ class QuizGame:
 
     # 퀴즈 풀기
     def play_quiz(self):
-        quizzes_to_play = self.get_current_quizzes()
+        # 퀴즈 원본 셔플 방지 위해 복사본만 셔플해서 사용하기
+        quizzes_to_play = self.get_current_quizzes()[:]
         # 퀴즈 셔플
         shuffle(quizzes_to_play)
         # 퀴즈 시작
