@@ -1,6 +1,6 @@
 import os
 import json
-from random import shuffle
+from random import sample
 from utils import get_input
 from constants import FILE_PATH, DEFAULT_QUIZZES
 
@@ -56,10 +56,16 @@ class QuizGame:
 
     # 퀴즈 풀기
     def play_quiz(self):
-        # 퀴즈 원본 셔플 방지 위해 복사본만 셔플해서 사용하기
-        quizzes_to_play = self.get_current_quizzes()[:]
+        # 퀴즈 원본
+        all_quizzes = self.get_current_quizzes()
+        # 퀴즈 수 입력 받기
+        count = get_input(
+            f"총 {len(all_quizzes)}개의 퀴즈 중 풀고 싶은 퀴즈 수를 입력하세요: ",
+            1,
+            len(all_quizzes),
+        )
         # 퀴즈 셔플
-        shuffle(quizzes_to_play)
+        quizzes_to_play = sample(all_quizzes, int(count))
         # 퀴즈 시작
         print("=" * 30)
         print("퀴즈를 시작합니다!")
