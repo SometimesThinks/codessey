@@ -3,6 +3,7 @@ import json
 from random import sample, choice
 from utils import get_input
 from constants import FILE_PATH, DEFAULT_QUIZZES
+from datetime import datetime
 
 
 class Quiz:
@@ -28,6 +29,7 @@ class QuizGame:
     def __init__(self):
         self.quizzes = []
         self.best_score = None
+        self.history = []
 
     # 현재 사용할 퀴즈 리스트를 결정(내 퀴즈가 있으면 내 걸, 없으면 기본 퀴즈 반환)
     def get_current_quizzes(self):
@@ -45,7 +47,8 @@ class QuizGame:
         print("3. 퀴즈 삭제")
         print("4. 퀴즈 목록")
         print("5. 최고 점수 확인")
-        print("6. 종료")
+        print("6. 퀴즈 풀이 기록")
+        print("7. 종료")
         print("=" * 30)
 
     # 퀴즈 불러오기
@@ -54,8 +57,9 @@ class QuizGame:
             try:
                 with open(FILE_PATH, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    self.quizzes = data["quizzes"]
-                    self.best_score = data["best_score"]
+                    self.quizzes = data.get("quizzes", [])
+                    self.best_score = data.get("best_score", None)
+                    self.history = data.get("history", [])
             except Exception:
                 print("파일을 불러오는 중 오류가 발생했습니다.")
 
@@ -76,35 +80,50 @@ class QuizGame:
         print("퀴즈를 시작합니다!")
         print("=" * 30)
         score = 0
-        for quiz in quizzes_to_play:
-            quiz = Quiz(**quiz)
-            quiz.display_quiz()
-            used_hint = False
+        try:
+            for quiz in quizzes_to_play:
+                quiz = Quiz(**quiz)
+                quiz.display_quiz()
+                used_hint = False
 
-            while True:
-                answer = get_input("정답(힌트 보기는 0번 입력): ", 0, 4)
-                if answer == "0":
-                    print(f"힌트: {quiz.hint}번은 정답이 아닙니다!")
-                    used_hint = True
+                while True:
+                    answer = get_input("정답(힌트 보기는 0번 입력): ", 0, 4)
+                    if answer == "0":
+                        print(f"힌트: {quiz.hint}번은 정답이 아닙니다!")
+                        used_hint = True
+                    else:
+                        break
+                # 정답 확인 및 점수 부여
+                if quiz.check_answer(answer):
+                    if used_hint:
+                        score += 5
+                        print("정답입니다! (힌트 사용: +5점)")
+                    else:
+                        score += 10
+                        print("정답입니다! (힌트 미사용: +10점)")
+                    self.update_best_score(score)
                 else:
-                    break
-            # 정답 확인 및 점수 부여
-            if quiz.check_answer(answer):
-                if used_hint:
-                    score += 5
-                    print("정답입니다! (힌트 사용: +5점)")
-                else:
-                    score += 10
-                    print("정답입니다! (힌트 미사용: +10점)")
-            else:
-                print("아쉽지만 오답입니다...")
-            print()
-        print("=" * 30)
-        print(f"총 점수: {score}점")
-        # 최고 점수 업데이트
-        if self.update_best_score(score):
-            print("최고 점수 갱신!")
-        print("=" * 30)
+                    print("아쉽지만 오답입니다...")
+                print()
+        except KeyboardInterrupt:
+            print("\n퀴즈가 중단되었습니다.")
+            raise
+        except EOFError:
+            print("\n퀴즈가 중단되었습니다.")
+            raise
+        finally:
+            record = {
+                "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "score": score,
+                "total_questions": len(quizzes_to_play),
+            }
+            self.history.append(record)
+            print("=" * 30)
+            print(f"총 점수: {score}점")
+            # 최고 점수 업데이트
+            if self.update_best_score(score):
+                print("최고 점수 갱신!")
+            print("=" * 30)
 
     # 퀴즈 추가
     def add_quiz(self):
@@ -133,6 +152,7 @@ class QuizGame:
             data = {
                 "best_score": self.best_score,
                 "quizzes": self.quizzes,
+                "history": self.history,
             }
             with open(FILE_PATH, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=4)
@@ -186,6 +206,19 @@ class QuizGame:
     def update_best_score(self, score):
         if self.best_score is None or score > self.best_score:
             self.best_score = score
-            self.save_quizzes()
             return True
         return False
+
+    # 퀴즈 풀이 기록
+    def show_history(self):
+        print("=" * 30)
+        print("퀴즈 풀이 기록")
+        print("=" * 30)
+        if not self.history:
+            print("아직 퀴즈 풀이 기록이 없습니다.")
+            return
+        for i, record in enumerate(self.history):
+            print(
+                f"{i + 1}. {record['date']} - {record['score']}점 ({record['total_questions']}문제)"
+            )
+        print("=" * 30)

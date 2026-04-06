@@ -10,8 +10,7 @@ def main():
     try:
         while True:
             game.show_menu()
-            choice = get_input("메뉴를 선택하세요: ", 1, 6)
-            print()
+            choice = get_input("메뉴를 선택하세요: ", 1, 7)
             if choice == "1":
                 game.play_quiz()
             elif choice == "2":
@@ -23,6 +22,8 @@ def main():
             elif choice == "5":
                 game.show_best_score()
             elif choice == "6":
+                game.show_history()
+            elif choice == "7":
                 break
     # KeyboardInterrupt 예외 처리(Ctrl + C가 인터럽트를 의미하기 때문)
     except KeyboardInterrupt as e:
