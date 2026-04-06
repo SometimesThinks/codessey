@@ -41,7 +41,7 @@ state.json
 
 ## 실행 방법
 
-python3 main.py
+프로젝트 루트에서 `python3 main.py` 명령어를 실행하여 프로그램을 시작합니다.
 
 ## 요구 사항 및 기능 목록
 
@@ -145,7 +145,7 @@ python3 main.py
 
 ---
 
-## 실행 결과
+## 실행 결과 및 로그
 
 전체 기능에 대한 실행 화면과 테스트 결과는 [실행 결과](./docs/test_results.md)에서 확인하실 수 있습니다.
 git log는 [git log](./docs/git_logs.md)를 통해 확인하실 수 있습니다.
