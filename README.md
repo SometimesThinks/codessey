@@ -148,4 +148,5 @@ state.json
 ## 실행 결과 및 로그
 
 전체 기능에 대한 실행 화면과 테스트 결과는 [실행 결과](./docs/test_results.md)에서 확인하실 수 있습니다.
+
 git log는 [git log](./docs/git_logs.md)를 통해 확인하실 수 있습니다.
