@@ -1,5 +1,6 @@
 import os
 import json
+from random import shuffle
 from utils import get_input
 from constants import FILE_PATH, DEFAULT_QUIZZES
 
@@ -56,6 +57,8 @@ class QuizGame:
     # 퀴즈 풀기
     def play_quiz(self):
         quizzes_to_play = self.get_current_quizzes()
+        # 퀴즈 셔플
+        shuffle(quizzes_to_play)
         # 퀴즈 시작
         print("=" * 30)
         print("퀴즈를 시작합니다!")
