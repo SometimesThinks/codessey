@@ -41,6 +41,8 @@ state.json
 
 ## 실행 방법
 
+python3 main.py
+
 ## 요구 사항 및 기능 목록
 
 ### 메뉴 선택
