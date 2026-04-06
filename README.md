@@ -17,7 +17,8 @@ Git과 Python을 활용한 퀴즈 게임 프로젝트입니다.
 ├── utils.py         # 문자, 숫자 입력 검증 함수
 ├── constants.py     # 기본 퀴즈 데이터 및 파일 경로 등 고정값 정의
 ├── docs/            # 프로젝트 문서 및 퀴즈 결과 보고서
-│   └── test_results.md # 전체 기능 테스트 내역 및 실행 결과
+│   ├── test_results.md # 전체 기능 테스트 내역 및 실행 결과
+│   └── git_logs.md     # 모든 기능 완성까지의 git log 기록
 ├── state.json       # [생성됨] 사용자 퀴즈 데이터 및 최고 점수 저장소
 ├── .gitignore       # Git 추적 제외 파일 설정
 └── README.md        # 프로젝트 정보 및 개발 진행 상황
