@@ -1,6 +1,6 @@
 import os
 import json
-from random import sample
+from random import sample, choice
 from utils import get_input
 from constants import FILE_PATH, DEFAULT_QUIZZES
 
@@ -10,6 +10,10 @@ class Quiz:
         self.question = question
         self.choices = choices
         self.answer = answer
+        # 정답을 제외한 나머지 선택지 중 하나를 힌트로 저장
+        self.hint = choice(
+            [i + 1 for i in range(len(choices)) if str(i + 1) != str(answer)]
+        )
 
     def display_quiz(self):
         print(self.question)
@@ -75,15 +79,28 @@ class QuizGame:
         for quiz in quizzes_to_play:
             quiz = Quiz(**quiz)
             quiz.display_quiz()
-            answer = input("정답: ")
+            used_hint = False
+
+            while True:
+                answer = get_input("정답(힌트 보기는 0번 입력): ", 0, 4)
+                if answer == "0":
+                    print(f"힌트: {quiz.hint}번은 정답이 아닙니다!")
+                    used_hint = True
+                else:
+                    break
+            # 정답 확인 및 점수 부여
             if quiz.check_answer(answer):
-                print("정답입니다!")
-                score += 1
+                if used_hint:
+                    score += 5
+                    print("정답입니다! (힌트 사용: +5점)")
+                else:
+                    score += 10
+                    print("정답입니다! (힌트 미사용: +10점)")
             else:
                 print("아쉽지만 오답입니다...")
             print()
         print("=" * 30)
-        print(f"정답 개수: {score}")
+        print(f"총 점수: {score}점")
         # 최고 점수 업데이트
         if self.update_best_score(score):
             print("최고 점수 갱신!")
