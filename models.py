@@ -1,7 +1,7 @@
 import os
 import json
 from random import sample, choice
-from utils import get_input
+from utils import get_num_input, get_text_input
 from constants import FILE_PATH, DEFAULT_QUIZZES
 from datetime import datetime
 
@@ -68,7 +68,7 @@ class QuizGame:
         # 퀴즈 원본
         all_quizzes = self.get_current_quizzes()
         # 퀴즈 수 입력 받기
-        count = get_input(
+        count = get_num_input(
             f"총 {len(all_quizzes)}개의 퀴즈 중 풀고 싶은 퀴즈 수를 입력하세요: ",
             1,
             len(all_quizzes),
@@ -87,7 +87,7 @@ class QuizGame:
                 used_hint = False
 
                 while True:
-                    answer = get_input("정답(힌트 보기는 0번 입력): ", 0, 4)
+                    answer = get_num_input("정답(힌트 보기는 0번 입력): ", 0, 4)
                     if answer == "0":
                         print(f"힌트: {quiz.hint}번은 정답이 아닙니다!")
                         used_hint = True
@@ -130,12 +130,12 @@ class QuizGame:
         print("=" * 30)
         print("퀴즈를 추가합니다!")
         print("=" * 30)
-        question = input("문제: ")
+        question = get_text_input("문제: ")
         choices = []
         for i in range(4):
-            choice = input(f"{i + 1}. ")
+            choice = get_text_input(f"{i + 1}. ")
             choices.append(choice)
-        answer = get_input("정답: ", 1, 4)
+        answer = get_num_input("정답: ", 1, 4)
         self.quizzes.append(
             {"question": question, "choices": choices, "answer": answer}
         )
@@ -171,7 +171,7 @@ class QuizGame:
         print("퀴즈를 삭제합니다.")
         print("=" * 30)
         self.show_quizzes()
-        index = get_input("삭제할 퀴즈 번호를 입력하세요: ", 1, len(self.quizzes))
+        index = get_num_input("삭제할 퀴즈 번호를 입력하세요: ", 1, len(self.quizzes))
         popped = self.quizzes.pop(int(index) - 1)
         if self.save_quizzes():
             print("퀴즈가 삭제되었습니다!")

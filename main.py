@@ -1,5 +1,5 @@
 import sys
-from utils import get_input
+from utils import get_num_input
 from models import QuizGame
 
 
@@ -10,7 +10,7 @@ def main():
     try:
         while True:
             game.show_menu()
-            choice = get_input("메뉴를 선택하세요: ", 1, 7)
+            choice = get_num_input("메뉴를 선택하세요: ", 1, 7)
             if choice == "1":
                 game.play_quiz()
             elif choice == "2":
