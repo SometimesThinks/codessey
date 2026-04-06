@@ -24,6 +24,12 @@ class QuizGame:
         self.quizzes = []
         self.best_score = None
 
+    # 현재 사용할 퀴즈 리스트를 결정(내 퀴즈가 있으면 내 걸, 없으면 기본 퀴즈 반환)
+    def get_current_quizzes(self):
+        if self.quizzes:
+            return self.quizzes
+        return DEFAULT_QUIZZES
+
     # 메뉴 출력
     def show_menu(self):
         print("=" * 30)
@@ -45,17 +51,17 @@ class QuizGame:
                     self.quizzes = data["quizzes"]
                     self.best_score = data["best_score"]
             except Exception:
-                print("파일을 불러오는 중 오류가 발생했습니다. 기본 퀴즈로 대체합니다.")
-        if not self.quizzes:
-            self.quizzes = [quiz for quiz in DEFAULT_QUIZZES]
+                print("파일을 불러오는 중 오류가 발생했습니다.")
 
     # 퀴즈 풀기
     def play_quiz(self):
+        quizzes_to_play = self.get_current_quizzes()
+        # 퀴즈 시작
         print("=" * 30)
         print("퀴즈를 시작합니다!")
         print("=" * 30)
         score = 0
-        for quiz in self.quizzes:
+        for quiz in quizzes_to_play:
             quiz = Quiz(**quiz)
             quiz.display_quiz()
             answer = input("정답: ")
@@ -108,10 +114,11 @@ class QuizGame:
 
     # 퀴즈 목록
     def show_quizzes(self):
+        quizzes_to_show = self.get_current_quizzes()
         print("=" * 30)
         print("퀴즈 목록")
         print("=" * 30)
-        for i, quiz in enumerate(self.quizzes):
+        for i, quiz in enumerate(quizzes_to_show):
             print(f"{i + 1}. {quiz['question']}")
             for j, choice in enumerate(quiz["choices"]):
                 print(f"   {j + 1}. {choice}")
