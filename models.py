@@ -38,9 +38,10 @@ class QuizGame:
         print("=" * 30)
         print("1. 퀴즈 풀기")
         print("2. 퀴즈 추가")
-        print("3. 퀴즈 목록")
-        print("4. 최고 점수 확인")
-        print("5. 종료")
+        print("3. 퀴즈 삭제")
+        print("4. 퀴즈 목록")
+        print("5. 최고 점수 확인")
+        print("6. 종료")
         print("=" * 30)
 
     # 퀴즈 불러오기
@@ -121,6 +122,25 @@ class QuizGame:
             return True
         except Exception:
             return False
+
+    # 퀴즈 삭제
+    def delete_quiz(self):
+        # 퀴즈가 없을 경우
+        if not self.quizzes:
+            print("등록된 퀴즈가 없습니다.")
+            return
+        # 퀴즈 삭제 시작
+        print("=" * 30)
+        print("퀴즈를 삭제합니다.")
+        print("=" * 30)
+        self.show_quizzes()
+        index = get_input("삭제할 퀴즈 번호를 입력하세요: ", 1, len(self.quizzes))
+        popped = self.quizzes.pop(int(index) - 1)
+        if self.save_quizzes():
+            print("퀴즈가 삭제되었습니다!")
+        else:
+            self.quizzes.insert(int(index) - 1, popped)
+            print("퀴즈 삭제에 실패했습니다.")
 
     # 퀴즈 목록
     def show_quizzes(self):

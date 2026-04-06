@@ -9,19 +9,20 @@ def main():
 
     try:
         while True:
-            print()
             game.show_menu()
-            choice = get_input("메뉴를 선택하세요: ", 1, 5)
+            choice = get_input("메뉴를 선택하세요: ", 1, 6)
             print()
             if choice == "1":
                 game.play_quiz()
             elif choice == "2":
                 game.add_quiz()
             elif choice == "3":
-                game.show_quizzes()
+                game.delete_quiz()
             elif choice == "4":
-                game.show_best_score()
+                game.show_quizzes()
             elif choice == "5":
+                game.show_best_score()
+            elif choice == "6":
                 break
     # KeyboardInterrupt 예외 처리(Ctrl + C가 인터럽트를 의미하기 때문)
     except KeyboardInterrupt as e:
