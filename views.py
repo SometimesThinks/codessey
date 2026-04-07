@@ -36,3 +36,11 @@ class TerminalView:
                 except ValueError:
                     print("숫자로만 구성된 행을 입력해야 합니다.")
         return matrix
+
+    def draw_line(self):
+        print("=" * 30)
+
+    def draw_section_title(self, title):
+        self.draw_line()
+        print(f"[{title}]")
+        self.draw_line()
