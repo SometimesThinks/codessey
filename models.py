@@ -3,16 +3,6 @@ from constants import BENCHMARK_ITERATIONS, EPSILON
 
 
 class NPUSimulator:
-    @staticmethod
-    def compare_results(mac_a, mac_b):
-        """두 MAC 점수를 비교하여 판정 결과를 반환"""
-        if abs(mac_a - mac_b) < EPSILON:
-            return "판정 불가(UNDECIDED)"
-        elif mac_a > mac_b:
-            return "필터 A"
-        else:
-            return "필터 B"
-
     def __init__(self, n, filter, pattern):
         self.n = n
         self.filter = filter
@@ -33,13 +23,20 @@ class NPUSimulator:
     # 성능 분석 함수
     def analyze_performance(self, iterations=BENCHMARK_ITERATIONS):
         start_time = time.perf_counter()
-
         for _ in range(iterations):
             result = self.mac_operation_2d()
-
         end_time = time.perf_counter()
-
-        # 전체 소요 시간을 반복 횟수로 나누어 평균 측정 (ms 단위 변환)ㅌㅋ
+        # 전체 소요 시간을 반복 횟수로 나누어 평균 측정 (ms 단위 변환)
         avg_time_ms = ((end_time - start_time) / iterations) * 1000
 
         return result, avg_time_ms
+
+    # 두 MAC 점수를 비교하여 판정 결과를 반환
+    @staticmethod
+    def compare_results(mac_a, mac_b):
+        if abs(mac_a - mac_b) < EPSILON:
+            return "판정 불가(UNDECIDED)"
+        elif mac_a > mac_b:
+            return "필터 A"
+        else:
+            return "필터 B"

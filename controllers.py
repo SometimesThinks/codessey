@@ -23,15 +23,24 @@ class Controller:
         # 패턴 행렬 입력
         self.view.draw_section_title("패턴 행렬")
         pattern = self.view.input_matrix(3)
+
+        # 입력된 데이터 확인
+        self.view.draw_section_title("입력 데이터 확인")
+        self.view.display_matrix("필터 A", filter_a)
+        self.view.display_matrix("필터 B", filter_b)
+        self.view.display_matrix("패턴", pattern)
+
         # MAC 점수 및 성능 분석
         mac_a, time_a = NPUSimulator(3, filter_a, pattern).analyze_performance()
         mac_b, time_b = NPUSimulator(3, filter_b, pattern).analyze_performance()
+
         # MAC 점수 결과 출력
         self.view.draw_section_title("MAC 결과")
         self.view.display_result("[필터 A] MAC 점수", mac_a)
         self.view.display_performance("필터 A", time_a)
         self.view.display_result("[필터 B] MAC 점수", mac_b)
         self.view.display_performance("필터 B", time_b)
+
         # 판정 결과 출력
         verdict = NPUSimulator.compare_results(mac_a, mac_b)
         self.view.display_result("최종 판정", verdict)
