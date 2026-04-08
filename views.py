@@ -1,4 +1,5 @@
 from utils import smart_input, get_num_input
+from constants import BENCHMARK_ITERATIONS
 
 
 class TerminalView:
@@ -47,8 +48,8 @@ class TerminalView:
         print(f"{label}: {value}")
 
     # 성능 출력 함수
-    def display_performance(self, label, time_ms):
-        print(f"[{label}] 평균 연산 시간: {time_ms:.6f} ms")
+    def display_performance(self, time_ms):
+        print(f"연산 시간(평균/{BENCHMARK_ITERATIONS}회): {time_ms:.6f} ms")
 
     # 구분선 그리기 함수
     def draw_line(self):

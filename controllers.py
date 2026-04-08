@@ -1,5 +1,6 @@
 from views import TerminalView
 from models import NPUSimulator
+import statistics
 
 
 class Controller:
@@ -34,16 +35,16 @@ class Controller:
         mac_a, time_a = NPUSimulator(3, filter_a, pattern).analyze_performance()
         mac_b, time_b = NPUSimulator(3, filter_b, pattern).analyze_performance()
 
-        # MAC 점수 결과 출력
-        self.view.draw_section_title("MAC 결과")
-        self.view.display_result("[필터 A] MAC 점수", mac_a)
-        self.view.display_performance("필터 A", time_a)
-        self.view.display_result("[필터 B] MAC 점수", mac_b)
-        self.view.display_performance("필터 B", time_b)
-
-        # 판정 결과 출력
+        # 평균 연산 시간 계산
+        avg_time = statistics.mean([time_a, time_b])
         verdict = NPUSimulator.compare_results(mac_a, mac_b)
-        self.view.display_result("최종 판정", verdict)
+
+        # 통합 결과 출력
+        self.view.draw_section_title("MAC 결과")
+        self.view.display_result("A 점수", mac_a)
+        self.view.display_result("B 점수", mac_b)
+        self.view.display_performance(avg_time)
+        self.view.display_result("판정", verdict)
         self.view.draw_line()
 
     def run_data_mode(self):

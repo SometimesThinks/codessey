@@ -37,6 +37,6 @@ class NPUSimulator:
         if abs(mac_a - mac_b) < EPSILON:
             return "판정 불가(UNDECIDED)"
         elif mac_a > mac_b:
-            return "필터 A"
+            return "A"
         else:
-            return "필터 B"
+            return "B"
