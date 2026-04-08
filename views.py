@@ -35,6 +35,13 @@ class TerminalView:
                     print("숫자로만 구성된 행을 입력해야 합니다.")
         return matrix
 
+    # 행렬 출력 함수
+    def display_matrix(self, label, matrix):
+        print(f"[{label}]")
+        for row in matrix:
+            print("  ".join(f"{val:g}" for val in row))
+        print()
+
     # 결과 출력 함수
     def display_result(self, label, value):
         print(f"{label}: {value}")
