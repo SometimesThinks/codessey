@@ -1,7 +1,22 @@
+import sys
+
+
+# 터미널 직접 입력, 파일 읽기 개행 보정 함수
+def smart_input(prompt=""):
+    try:
+        user_input = input(prompt)
+        # 파일 읽기 시, 수동 개행
+        if not sys.stdin.isatty():
+            print()
+        return user_input.strip()
+    except EOFError:
+        return ""
+
+
 def get_num_input(prompt, min_choice, max_choice):
     while True:
         # 사용자 입력 받기 + 공백 제거
-        user_input = input(prompt).strip()
+        user_input = smart_input(prompt).strip()
         # 입력이 비어있다면 다시 입력받기
         if not user_input:
             print("입력이 비어있습니다. 다시 입력해주세요.")

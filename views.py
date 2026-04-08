@@ -1,6 +1,4 @@
-# View: 사용자에게 보여지는 화면 담당
-
-from utils import get_num_input
+from utils import smart_input, get_num_input
 
 
 class TerminalView:
@@ -25,7 +23,7 @@ class TerminalView:
         for i in range(n):
             while True:
                 try:
-                    line = list(map(float, input(f"{i + 1}번째 행: ").split()))
+                    line = list(map(float, smart_input(f"{i + 1}번째 행: ").split()))
                     # 개수 체크
                     if len(line) != n:
                         print(f"{n}개의 숫자를 입력해야 합니다.")
@@ -37,9 +35,15 @@ class TerminalView:
                     print("숫자로만 구성된 행을 입력해야 합니다.")
         return matrix
 
+    # 결과 출력 함수
+    def display_result(self, label, value):
+        print(f"{label}: {value}")
+
+    # 구분선 그리기 함수
     def draw_line(self):
         print("=" * 30)
 
+    # 섹션 제목 그리기 함수
     def draw_section_title(self, title):
         self.draw_line()
         print(f"[{title}]")
