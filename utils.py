@@ -31,3 +31,32 @@ def get_num_input(prompt, min_choice, max_choice):
             continue
         # 정상 입력이라면 반환
         return user_input
+
+
+# NxN 크기의 Cross(+) 패턴 생성 (중심 행과 열이 1)
+def generate_cross_matrix(n):
+    matrix = [[0.0] * n for _ in range(n)]
+    mid = n // 2
+    for i in range(n):
+        matrix[mid][i] = 1.0  # 가로줄
+        matrix[i][mid] = 1.0  # 세로줄
+    return matrix
+
+
+# NxN 크기의 X 패턴 생성 (대각선이 1)
+def generate_x_matrix(n):
+    matrix = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        matrix[i][i] = 1.0  # 왼쪽 위 -> 오른쪽 아래
+        matrix[i][n - 1 - i] = 1.0  # 오른쪽 위 -> 왼쪽 아래
+    return matrix
+
+
+# +, cross -> Cross / x, X -> X 로 정규화
+def normalize_label(label):
+    label = str(label).lower().strip()
+    if label in ["+", "cross"]:
+        return "Cross"
+    if label in ["x"]:
+        return "X"
+    return label
