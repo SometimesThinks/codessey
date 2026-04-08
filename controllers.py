@@ -32,6 +32,9 @@ class Controller:
         self.view.display_performance("필터 A", time_a)
         self.view.display_result("[필터 B] MAC 점수", mac_b)
         self.view.display_performance("필터 B", time_b)
+        # 판정 결과 출력
+        verdict = NPUSimulator.compare_results(mac_a, mac_b)
+        self.view.display_result("최종 판정", verdict)
         self.view.draw_line()
 
     def run_data_mode(self):
