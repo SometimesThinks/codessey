@@ -39,6 +39,10 @@ class TerminalView:
     def display_result(self, label, value):
         print(f"{label}: {value}")
 
+    # 성능 출력 함수
+    def display_performance(self, label, time_ms):
+        print(f"[{label}] 평균 연산 시간: {time_ms:.6f} ms")
+
     # 구분선 그리기 함수
     def draw_line(self):
         print("=" * 30)
