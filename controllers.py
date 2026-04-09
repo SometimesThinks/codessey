@@ -1,4 +1,17 @@
-from views import TerminalView
+from cli import (
+    display_menu,
+    input_matrix,
+    display_matrix,
+    display_result,
+    display_performance,
+    display_pattern_analysis,
+    display_performance_table,
+    display_summary_report,
+    display_loader_status,
+    draw_section_title,
+    draw_line,
+    draw_sub_line,
+)
 from models import NPUSimulator
 from utils import load_json, extract_size_from_key, normalize_label
 import statistics
@@ -6,10 +19,10 @@ import statistics
 
 class Controller:
     def __init__(self):
-        self.view = TerminalView()
+        pass
 
     def run(self):
-        mode = self.view.display_menu()
+        mode = display_menu()
         if mode == "1":
             self.run_user_mode()
         elif mode == "2":
@@ -18,20 +31,20 @@ class Controller:
     # 사용자 입력 모드
     def run_user_mode(self):
         # 필터 행렬 A 입력
-        self.view.draw_section_title("필터 행렬 A")
-        filter_a = self.view.input_matrix(3)
+        draw_section_title("필터 행렬 A")
+        filter_a = input_matrix(3)
         # 필터 행렬 B 입력
-        self.view.draw_section_title("필터 행렬 B")
-        filter_b = self.view.input_matrix(3)
+        draw_section_title("필터 행렬 B")
+        filter_b = input_matrix(3)
         # 패턴 행렬 입력
-        self.view.draw_section_title("패턴 행렬")
-        pattern = self.view.input_matrix(3)
+        draw_section_title("패턴 행렬")
+        pattern = input_matrix(3)
 
         # 입력된 데이터 확인
-        self.view.draw_section_title("입력 데이터 확인")
-        self.view.display_matrix("필터 A", filter_a)
-        self.view.display_matrix("필터 B", filter_b)
-        self.view.display_matrix("패턴", pattern)
+        draw_section_title("입력 데이터 확인")
+        display_matrix("필터 A", filter_a)
+        display_matrix("필터 B", filter_b)
+        display_matrix("패턴", pattern)
 
         # MAC 점수 및 성능 분석
         mac_a, time_a = NPUSimulator(3, filter_a, pattern).analyze_performance()
@@ -47,12 +60,12 @@ class Controller:
             verdict_str = verdict
 
         # 통합 결과 출력
-        self.view.draw_section_title("MAC 결과")
-        self.view.display_result("A 점수", mac_a)
-        self.view.display_result("B 점수", mac_b)
-        self.view.display_performance(avg_time)
-        self.view.display_result("판정", verdict_str)
-        self.view.draw_line()
+        draw_section_title("MAC 결과")
+        display_result("A 점수", mac_a)
+        display_result("B 점수", mac_b)
+        display_performance(avg_time)
+        display_result("판정", verdict_str)
+        draw_line()
 
     # data.json 데이터 분석 모드
     def run_data_mode(self):
@@ -70,17 +83,17 @@ class Controller:
         )
 
         # 3. 성능 분석 결과 출력
-        self.view.draw_section_title("3. 성능 분석")
-        self.view.display_performance_table(perf_stats)
+        draw_section_title("3. 성능 분석")
+        display_performance_table(perf_stats)
 
         # 4. 전체 결과 요약 출력
-        self.view.draw_section_title("4. 결과 요약")
+        draw_section_title("4. 결과 요약")
         pass_cnt = sum(1 for r in results if r["pass"])
         fail_cnt = len(results) - pass_cnt
         failures = [r for r in results if not r["pass"]]
 
-        self.view.display_summary_report(len(results), pass_cnt, fail_cnt, failures)
-        self.view.draw_line()
+        display_summary_report(len(results), pass_cnt, fail_cnt, failures)
+        draw_line()
 
     # 데이터 로드 및 float 전처리
     def _load_and_preprocess(self):
@@ -107,18 +120,16 @@ class Controller:
 
     # 필터 로드 상태 출력
     def _display_loader_status(self, filters):
-        self.view.draw_section_title("1. 필터 로드")
+        draw_section_title("1. 필터 로드")
         for size_key in sorted(filters.keys(), key=lambda x: int(x.split("_")[1])):
             available_types = ", ".join(
                 [t.capitalize() for t in filters[size_key].keys()]
             )
-            self.view.display_loader_status(
-                size_key, f"필터 로드 완료 ({available_types})"
-            )
+            display_loader_status(size_key, f"필터 로드 완료 ({available_types})")
 
     # 일괄 패턴 분석 실행 및 결과 수집
     def _execute_batch_simulations(self, filters, patterns):
-        self.view.draw_section_title("2. 패턴 분석 (라벨 정규화 적용)")
+        draw_section_title("2. 패턴 분석 (라벨 정규화 적용)")
         results = []
         perf_stats = {}
 
@@ -134,9 +145,7 @@ class Controller:
             filter_set = filters.get(f"size_{n}")
             if not filter_set:
                 reason = "필터 데이터 없음"
-                self.view.display_pattern_analysis(
-                    p_key, 0.0, 0.0, "-", expected, "FAIL", reason
-                )
+                display_pattern_analysis(p_key, 0.0, 0.0, "-", expected, "FAIL", reason)
                 results.append(
                     {"key": p_key, "pass": False, "status": "FAIL", "reason": reason}
                 )
@@ -145,9 +154,7 @@ class Controller:
             # 사이즈 검증
             if len(pattern_matrix) != n or any(len(row) != n for row in pattern_matrix):
                 reason = "규격 불일치"
-                self.view.display_pattern_analysis(
-                    p_key, 0.0, 0.0, "-", expected, "FAIL", reason
-                )
+                display_pattern_analysis(p_key, 0.0, 0.0, "-", expected, "FAIL", reason)
                 results.append(
                     {"key": p_key, "pass": False, "status": "FAIL", "reason": reason}
                 )
@@ -173,7 +180,7 @@ class Controller:
             )
 
             # 출력 및 결과 저장
-            self.view.display_pattern_analysis(
+            display_pattern_analysis(
                 p_key, score_cross, score_x, prediction, expected, status, reason
             )
             results.append(
