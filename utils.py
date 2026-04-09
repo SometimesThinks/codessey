@@ -1,4 +1,5 @@
 import sys
+import json
 
 
 # 터미널 직접 입력, 파일 읽기 개행 보정 함수
@@ -13,6 +14,7 @@ def smart_input(prompt=""):
         return ""
 
 
+# 숫자입력 함수
 def get_num_input(prompt, min_choice, max_choice):
     while True:
         # 사용자 입력 받기 + 공백 제거
@@ -33,25 +35,6 @@ def get_num_input(prompt, min_choice, max_choice):
         return user_input
 
 
-# NxN 크기의 Cross(+) 패턴 생성 (중심 행과 열이 1)
-def generate_cross_matrix(n):
-    matrix = [[0.0] * n for _ in range(n)]
-    mid = n // 2
-    for i in range(n):
-        matrix[mid][i] = 1.0  # 가로줄
-        matrix[i][mid] = 1.0  # 세로줄
-    return matrix
-
-
-# NxN 크기의 X 패턴 생성 (대각선이 1)
-def generate_x_matrix(n):
-    matrix = [[0.0] * n for _ in range(n)]
-    for i in range(n):
-        matrix[i][i] = 1.0  # 왼쪽 위 -> 오른쪽 아래
-        matrix[i][n - 1 - i] = 1.0  # 오른쪽 위 -> 왼쪽 아래
-    return matrix
-
-
 # +, cross -> Cross / x, X -> X 로 정규화
 def normalize_label(label):
     label = str(label).lower().strip()
@@ -59,4 +42,27 @@ def normalize_label(label):
         return "Cross"
     if label in ["x"]:
         return "X"
+    if label in ["undecided", "undecided_status"]:
+        return "UNDECIDED"
     return label
+
+
+# JSON 파일 로드 함수
+def load_json(file_path):
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"{file_path} 파일이 존재하지 않습니다.")
+        return None
+    except json.JSONDecodeError:
+        print(f"{file_path} 파일 형식이 올바르지 않습니다.")
+        return None
+
+
+# 패턴 키에서 사이즈(N) 추출 함수 (예: size_5_1 -> 5)
+def extract_size_from_key(key):
+    try:
+        return int(key.split("_")[1])
+    except (IndexError, ValueError):
+        return None
