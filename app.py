@@ -12,7 +12,7 @@ from cli import (
     draw_line,
     draw_sub_line,
 )
-from models import NPUSimulator
+from models import mac_operation, compare_results, analyze_performance
 from utils import load_json, extract_size_from_key, normalize_label
 import statistics
 
@@ -44,12 +44,12 @@ def run_user_mode():
     display_matrix("패턴", pattern)
 
     # MAC 점수 및 성능 분석
-    mac_a, time_a = NPUSimulator(3, filter_a, pattern).analyze_performance()
-    mac_b, time_b = NPUSimulator(3, filter_b, pattern).analyze_performance()
+    mac_a, time_a = analyze_performance(3, filter_a, pattern)
+    mac_b, time_b = analyze_performance(3, filter_b, pattern)
 
     # 평균 연산 시간 계산
     avg_time = statistics.mean([time_a, time_b])
-    verdict = NPUSimulator.compare_results(mac_a, mac_b)
+    verdict = compare_results(mac_a, mac_b)
 
     if verdict == "UNDECIDED":
         verdict_str = "판정 불가(동점 발생)"
@@ -160,11 +160,10 @@ def _execute_batch_simulations(filters, patterns):
             continue
 
         # MAC 연산 및 시간 측정
-        sim_cross = NPUSimulator(n, filter_set["cross"], pattern_matrix)
-        sim_x = NPUSimulator(n, filter_set["x"], pattern_matrix)
-
-        score_cross, time_cross = sim_cross.analyze_performance()
-        score_x, time_x = sim_x.analyze_performance()
+        score_cross, time_cross = analyze_performance(
+            n, filter_set["cross"], pattern_matrix
+        )
+        score_x, time_x = analyze_performance(n, filter_set["x"], pattern_matrix)
         avg_time = (time_cross + time_x) / 2
 
         # 성능 기록
@@ -173,7 +172,7 @@ def _execute_batch_simulations(filters, patterns):
         perf_stats[n].append(avg_time)
 
         # 판정 및 결과 분석
-        raw_v = NPUSimulator.compare_results(score_cross, score_x)
+        raw_v = compare_results(score_cross, score_x)
         prediction, is_pass, status, reason = _evaluate_verdict(raw_v, expected)
 
         # 출력 및 결과 저장
