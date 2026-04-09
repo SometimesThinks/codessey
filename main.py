@@ -1,12 +1,11 @@
 import sys
-from controllers import Controller
+from app import run
 
 
 def main():
+    # input.txt 파일로 입력 받기(개발용)
     sys.stdin = open("input.txt", "r")
-
-    controller = Controller()
-    controller.run()
+    run()
 
 
 if __name__ == "__main__":
