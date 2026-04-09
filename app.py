@@ -1,24 +1,11 @@
-from cli import (
-    display_menu,
-    input_matrix,
-    display_matrix,
-    display_result,
-    display_performance,
-    display_pattern_analysis,
-    display_performance_table,
-    display_summary_report,
-    display_loader_status,
-    draw_section_title,
-    draw_line,
-    draw_sub_line,
-)
-from models import mac_operation, compare_results, analyze_performance
-from utils import load_json, extract_size_from_key, normalize_label
+import cli
+import simulator
+from dataset import load_and_preprocess, extract_size_from_key, normalize_label
 import statistics
 
 
 def run():
-    mode = display_menu()
+    mode = cli.display_menu()
     if mode == "1":
         run_user_mode()
     elif mode == "2":
@@ -28,47 +15,42 @@ def run():
 # 사용자 입력 모드
 def run_user_mode():
     # 필터 행렬 A 입력
-    draw_section_title("필터 행렬 A")
-    filter_a = input_matrix(3)
+    cli.draw_section_title("필터 행렬 A")
+    filter_a = cli.input_matrix(3)
     # 필터 행렬 B 입력
-    draw_section_title("필터 행렬 B")
-    filter_b = input_matrix(3)
+    cli.draw_section_title("필터 행렬 B")
+    filter_b = cli.input_matrix(3)
     # 패턴 행렬 입력
-    draw_section_title("패턴 행렬")
-    pattern = input_matrix(3)
+    cli.draw_section_title("패턴 행렬")
+    pattern = cli.input_matrix(3)
 
     # 입력된 데이터 확인
-    draw_section_title("입력 데이터 확인")
-    display_matrix("필터 A", filter_a)
-    display_matrix("필터 B", filter_b)
-    display_matrix("패턴", pattern)
+    cli.draw_section_title("입력 데이터 확인")
+    cli.display_matrix("필터 A", filter_a)
+    cli.display_matrix("필터 B", filter_b)
+    cli.display_matrix("패턴", pattern)
 
     # MAC 점수 및 성능 분석
-    mac_a, time_a = analyze_performance(3, filter_a, pattern)
-    mac_b, time_b = analyze_performance(3, filter_b, pattern)
+    mac_a, time_a = simulator.analyze_performance(3, filter_a, pattern)
+    mac_b, time_b = simulator.analyze_performance(3, filter_b, pattern)
 
     # 평균 연산 시간 계산
     avg_time = statistics.mean([time_a, time_b])
-    verdict = compare_results(mac_a, mac_b)
-
-    if verdict == "UNDECIDED":
-        verdict_str = "판정 불가(동점 발생)"
-    else:
-        verdict_str = verdict
+    verdict = format_user_verdict(simulator.compare_results(mac_a, mac_b))
 
     # 통합 결과 출력
-    draw_section_title("MAC 결과")
-    display_result("A 점수", mac_a)
-    display_result("B 점수", mac_b)
-    display_performance(avg_time)
-    display_result("판정", verdict_str)
-    draw_line()
+    cli.draw_section_title("MAC 결과")
+    cli.display_result("A 점수", mac_a)
+    cli.display_result("B 점수", mac_b)
+    cli.display_performance(avg_time)
+    cli.display_result("판정", verdict)
+    cli.draw_line()
 
 
 # data.json 데이터 분석 모드
 def run_data_mode():
     # 0. 데이터 로드 및 전처리
-    data = _load_and_preprocess()
+    data = load_and_preprocess("data.json")
     if data is None:
         return
 
@@ -81,54 +63,29 @@ def run_data_mode():
     )
 
     # 3. 성능 분석 결과 출력
-    draw_section_title("3. 성능 분석")
-    display_performance_table(perf_stats)
+    cli.draw_section_title("3. 성능 분석")
+    cli.display_performance_table(perf_stats)
 
     # 4. 전체 결과 요약 출력
-    draw_section_title("4. 결과 요약")
+    cli.draw_section_title("4. 결과 요약")
     pass_cnt = sum(1 for r in results if r["pass"])
     fail_cnt = len(results) - pass_cnt
     failures = [r for r in results if not r["pass"]]
 
-    display_summary_report(len(results), pass_cnt, fail_cnt, failures)
-    draw_line()
-
-
-# 데이터 로드 및 float 전처리
-def _load_and_preprocess():
-    data = load_json("data.json")
-    if data is None:
-        return None
-
-    # 모든 필터 데이터를 float으로 미리 변환
-    filters = data.get("filters", {})
-    for s_key in filters:
-        for f_type in filters[s_key]:
-            filters[s_key][f_type] = [
-                [float(v) for v in row] for row in filters[s_key][f_type]
-            ]
-
-    # 모든 패턴 데이터를 float으로 미리 변환
-    patterns = data.get("patterns", {})
-    for p_key in patterns:
-        if "input" in patterns[p_key]:
-            patterns[p_key]["input"] = [
-                [float(v) for v in row] for row in patterns[p_key]["input"]
-            ]
-    return data
-
+    cli.display_summary_report(len(results), pass_cnt, fail_cnt, failures)
+    cli.draw_line()
 
 # 필터 로드 상태 출력
 def _display_loader_status(filters):
-    draw_section_title("1. 필터 로드")
+    cli.draw_section_title("1. 필터 로드")
     for size_key in sorted(filters.keys(), key=lambda x: int(x.split("_")[1])):
         available_types = ", ".join([t.capitalize() for t in filters[size_key].keys()])
-        display_loader_status(size_key, f"필터 로드 완료 ({available_types})")
+        cli.display_loader_status(size_key, f"필터 로드 완료 ({available_types})")
 
 
 # 일괄 패턴 분석 실행 및 결과 수집
 def _execute_batch_simulations(filters, patterns):
-    draw_section_title("2. 패턴 분석 (라벨 정규화 적용)")
+    cli.draw_section_title("2. 패턴 분석 (라벨 정규화 적용)")
     results = []
     perf_stats = {}
 
@@ -144,7 +101,7 @@ def _execute_batch_simulations(filters, patterns):
         filter_set = filters.get(f"size_{n}")
         if not filter_set:
             reason = "필터 데이터 없음"
-            display_pattern_analysis(p_key, 0.0, 0.0, "-", expected, "FAIL", reason)
+            cli.display_pattern_analysis(p_key, 0.0, 0.0, "-", expected, "FAIL", reason)
             results.append(
                 {"key": p_key, "pass": False, "status": "FAIL", "reason": reason}
             )
@@ -153,17 +110,19 @@ def _execute_batch_simulations(filters, patterns):
         # 사이즈 검증
         if len(pattern_matrix) != n or any(len(row) != n for row in pattern_matrix):
             reason = "규격 불일치"
-            display_pattern_analysis(p_key, 0.0, 0.0, "-", expected, "FAIL", reason)
+            cli.display_pattern_analysis(p_key, 0.0, 0.0, "-", expected, "FAIL", reason)
             results.append(
                 {"key": p_key, "pass": False, "status": "FAIL", "reason": reason}
             )
             continue
 
         # MAC 연산 및 시간 측정
-        score_cross, time_cross = analyze_performance(
+        score_cross, time_cross = simulator.analyze_performance(
             n, filter_set["cross"], pattern_matrix
         )
-        score_x, time_x = analyze_performance(n, filter_set["x"], pattern_matrix)
+        score_x, time_x = simulator.analyze_performance(
+            n, filter_set["x"], pattern_matrix
+        )
         avg_time = (time_cross + time_x) / 2
 
         # 성능 기록
@@ -172,11 +131,11 @@ def _execute_batch_simulations(filters, patterns):
         perf_stats[n].append(avg_time)
 
         # 판정 및 결과 분석
-        raw_v = compare_results(score_cross, score_x)
-        prediction, is_pass, status, reason = _evaluate_verdict(raw_v, expected)
+        raw_v = simulator.compare_results(score_cross, score_x)
+        prediction, is_pass, status, reason = evaluate_verdict(raw_v, expected)
 
         # 출력 및 결과 저장
-        display_pattern_analysis(
+        cli.display_pattern_analysis(
             p_key, score_cross, score_x, prediction, expected, status, reason
         )
         results.append(
@@ -187,7 +146,7 @@ def _execute_batch_simulations(filters, patterns):
 
 
 # 판정 결과 평가 함수
-def _evaluate_verdict(raw_verdict, expected):
+def evaluate_verdict(raw_verdict, expected):
     if raw_verdict == "UNDECIDED":
         prediction = "UNDECIDED"
         is_pass = expected == "UNDECIDED"
@@ -196,8 +155,26 @@ def _evaluate_verdict(raw_verdict, expected):
         else:
             return prediction, False, "FAIL", "동점 발생"
     else:
-        prediction = "Cross" if raw_verdict == "A" else "X"
+        prediction = "Cross" if raw_verdict == "FIRST" else "X"
         is_pass = prediction == expected
         status = "PASS" if is_pass else "FAIL"
         reason = "" if is_pass else "결과 불일치"
         return prediction, is_pass, status, reason
+
+
+# 사용자 입력 모드 판정명 변경 함수
+def format_user_verdict(verdict):
+    if verdict == "FIRST":
+        return "A"
+    if verdict == "SECOND":
+        return "B"
+    return "판정 불가(동점 발생)"
+
+
+# data.json 분석 모드 판정명 변경 함수
+def format_data_verdict(verdict):
+    if verdict == "FIRST":
+        return "Cross"
+    if verdict == "SECOND":
+        return "X"
+    return "UNDECIDED"

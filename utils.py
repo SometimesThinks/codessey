@@ -1,5 +1,4 @@
 import sys
-import json
 
 
 # 터미널 직접 입력, 파일 읽기 개행 보정 함수
@@ -33,36 +32,3 @@ def get_num_input(prompt, min_choice, max_choice):
             continue
         # 정상 입력이라면 반환
         return user_input
-
-
-# +, cross -> Cross / x, X -> X 로 정규화
-def normalize_label(label):
-    label = str(label).lower().strip()
-    if label in ["+", "cross"]:
-        return "Cross"
-    if label in ["x"]:
-        return "X"
-    if label in ["undecided", "undecided_status"]:
-        return "UNDECIDED"
-    return label
-
-
-# JSON 파일 로드 함수
-def load_json(file_path):
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"{file_path} 파일이 존재하지 않습니다.")
-        return None
-    except json.JSONDecodeError:
-        print(f"{file_path} 파일 형식이 올바르지 않습니다.")
-        return None
-
-
-# 패턴 키에서 사이즈(N) 추출 함수 (예: size_5_1 -> 5)
-def extract_size_from_key(key):
-    try:
-        return int(key.split("_")[1])
-    except (IndexError, ValueError):
-        return None
