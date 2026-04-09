@@ -60,8 +60,8 @@ class TerminalView:
         self, label, cross_score, x_score, prediction, expected, status, reason=""
     ):
         print(f"--- {label} ---")
-        print(f"Cross 점수: {cross_score:g}")
-        print(f"X 점수: {x_score:g}")
+        print(f"Cross 점수: {cross_score}")
+        print(f"X 점수: {x_score}")
         final_status = status if not reason else f"{status} ({reason})"
         print(f"판정: {prediction} | 기대값: {expected} | 결과: {final_status}")
 

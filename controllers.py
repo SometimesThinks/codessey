@@ -135,7 +135,7 @@ class Controller:
             if not filter_set:
                 reason = "필터 데이터 없음"
                 self.view.display_pattern_analysis(
-                    p_key, 0, 0, "-", expected, "FAIL", reason
+                    p_key, 0.0, 0.0, "-", expected, "FAIL", reason
                 )
                 results.append(
                     {"key": p_key, "pass": False, "status": "FAIL", "reason": reason}
@@ -146,7 +146,7 @@ class Controller:
             if len(pattern_matrix) != n or any(len(row) != n for row in pattern_matrix):
                 reason = "규격 불일치"
                 self.view.display_pattern_analysis(
-                    p_key, 0, 0, "-", expected, "FAIL", reason
+                    p_key, 0.0, 0.0, "-", expected, "FAIL", reason
                 )
                 results.append(
                     {"key": p_key, "pass": False, "status": "FAIL", "reason": reason}
