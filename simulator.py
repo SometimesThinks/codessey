@@ -12,13 +12,12 @@ def mac_operation(n, filter, pattern):
 
 
 # 두 MAC 점수를 비교하여 판정 결과를 반환
-def compare_results(mac_a, mac_b):
-    if abs(mac_a - mac_b) < EPSILON:
+def compare_results(first_score, second_score):
+    if abs(first_score - second_score) < EPSILON:
         return "UNDECIDED"
-    elif mac_a > mac_b:
-        return "A"
-    else:
-        return "B"
+    if first_score > second_score:
+        return "FIRST"
+    return "SECOND"
 
 
 # 성능 분석 함수
