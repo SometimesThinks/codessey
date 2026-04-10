@@ -12,14 +12,15 @@
 
 ```text
 .
-├── main.py          # 프로그램 진입점 및 모드 선택
-├── controllers.py   # 전체 실행 흐름 제어 (모드 1, 모드 2)
-├── models.py        # MAC 연산 및 판별 핵심 로직 (NPUSimulator)
-├── views.py         # 터미널 UI 출력 및 데이터 시각화 (TerminalView)
-├── utils.py         # JSON 로드, 라벨 정규화 등 유틸리티
+├── main.py          # 프로그램 진입점
+├── app.py           # 모드 분기 및 전체 실행 흐름
+├── cli.py           # 터미널 입력/출력 함수
+├── dataset.py       # data.json 로드, 전처리, 라벨 정규화
+├── simulator.py     # MAC 연산, 판정, 성능 측정 로직
+├── utils.py         # 입력 보조 유틸리티
 ├── constants.py     # EPSILON, 반복 횟수 등 전역 상수 관리
 ├── data.json        # 모드 2 전용 분석 데이터셋 (15개 케이스)
-├── input.txt        # 모드 1 테스트를 위한 자동 입력 더미 파일
+├── input.txt        # 개발용 자동 입력 더미 파일
 └── README.md        # 프로젝트 문서
 ```
 

@@ -51,7 +51,7 @@ def normalize_label(label):
     return label
 
 
-# 키에서 사이즈 추출 함수
+# 패턴 키에서 사이즈 추출 함수(예: size_5_1 -> 5)
 def extract_size_from_key(key):
     try:
         return int(key.split("_")[1])

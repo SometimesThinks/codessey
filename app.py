@@ -55,10 +55,10 @@ def run_data_mode():
         return
 
     # 1. 필터 로드 상태 출력
-    _display_loader_status(data.get("filters", {}))
+    cli.display_filter_load_status(data.get("filters", {}))
 
     # 2. 일괄 패턴 분석 수행
-    results, perf_stats = _execute_batch_simulations(
+    results, perf_stats = execute_batch_simulations(
         data.get("filters", {}), data.get("patterns", {})
     )
 
@@ -68,52 +68,43 @@ def run_data_mode():
 
     # 4. 전체 결과 요약 출력
     cli.draw_section_title("4. 결과 요약")
-    pass_cnt = sum(1 for r in results if r["pass"])
+    pass_cnt = sum(1 for r in results if r["status"] == "PASS")
     fail_cnt = len(results) - pass_cnt
-    failures = [r for r in results if not r["pass"]]
+    failures = [r for r in results if r["status"] == "FAIL"]
 
     cli.display_summary_report(len(results), pass_cnt, fail_cnt, failures)
     cli.draw_line()
 
-# 필터 로드 상태 출력
-def _display_loader_status(filters):
-    cli.draw_section_title("1. 필터 로드")
-    for size_key in sorted(filters.keys(), key=lambda x: int(x.split("_")[1])):
-        available_types = ", ".join([t.capitalize() for t in filters[size_key].keys()])
-        cli.display_loader_status(size_key, f"필터 로드 완료 ({available_types})")
-
 
 # 일괄 패턴 분석 실행 및 결과 수집
-def _execute_batch_simulations(filters, patterns):
+def execute_batch_simulations(filters, patterns):
     cli.draw_section_title("2. 패턴 분석 (라벨 정규화 적용)")
+    # results: [{"key": 패턴 키, "status": PASS/FAIL, "reason": 실패 사유}]
     results = []
+    # perf_stats: {행렬 크기 N: [해당 크기 패턴들의 평균 연산 시간(ms), ...]}
     perf_stats = {}
 
     for p_key in sorted(
         patterns.keys(), key=lambda x: (int(x.split("_")[1]), int(x.split("_")[2]))
     ):
+        # 패턴 데이터 추출
         p_data = patterns[p_key]
+        # 패턴 키에서 행렬 크기 추출
         n = extract_size_from_key(p_key)
+        # 기대값 정규화
         expected = normalize_label(p_data.get("expected", ""))
+        # 패턴 행렬 추출
         pattern_matrix = p_data.get("input", [])
 
-        # 필터 찾기
+        # 검증: 필터 존재 여부 확인
         filter_set = filters.get(f"size_{n}")
         if not filter_set:
-            reason = "필터 데이터 없음"
-            cli.display_pattern_analysis(p_key, 0.0, 0.0, "-", expected, "FAIL", reason)
-            results.append(
-                {"key": p_key, "pass": False, "status": "FAIL", "reason": reason}
-            )
+            record_failed_pattern(results, p_key, expected, "필터 데이터 없음")
             continue
 
-        # 사이즈 검증
+        # 검증: 패턴 및 필터 행렬 크기 확인
         if len(pattern_matrix) != n or any(len(row) != n for row in pattern_matrix):
-            reason = "규격 불일치"
-            cli.display_pattern_analysis(p_key, 0.0, 0.0, "-", expected, "FAIL", reason)
-            results.append(
-                {"key": p_key, "pass": False, "status": "FAIL", "reason": reason}
-            )
+            record_failed_pattern(results, p_key, expected, "규격 불일치")
             continue
 
         # MAC 연산 및 시간 측정
@@ -132,34 +123,36 @@ def _execute_batch_simulations(filters, patterns):
 
         # 판정 및 결과 분석
         raw_v = simulator.compare_results(score_cross, score_x)
-        prediction, is_pass, status, reason = evaluate_verdict(raw_v, expected)
+        prediction, status, reason = evaluate_verdict(raw_v, expected)
 
         # 출력 및 결과 저장
         cli.display_pattern_analysis(
             p_key, score_cross, score_x, prediction, expected, status, reason
         )
-        results.append(
-            {"key": p_key, "pass": is_pass, "status": status, "reason": reason}
-        )
+        results.append({"key": p_key, "status": status, "reason": reason})
 
     return results, perf_stats
+
+
+# 실패한 패턴 기록 함수
+def record_failed_pattern(results, pattern_key, expected, reason):
+    cli.display_pattern_analysis(pattern_key, 0.0, 0.0, "-", expected, "FAIL", reason)
+    # 실패 케이스도 results에 동일한 형태로 저장해 최종 요약 계산에 사용
+    results.append({"key": pattern_key, "status": "FAIL", "reason": reason})
 
 
 # 판정 결과 평가 함수
 def evaluate_verdict(raw_verdict, expected):
     if raw_verdict == "UNDECIDED":
         prediction = "UNDECIDED"
-        is_pass = expected == "UNDECIDED"
-        if is_pass:
-            return prediction, True, "PASS", ""
-        else:
-            return prediction, False, "FAIL", "동점 발생"
-    else:
-        prediction = "Cross" if raw_verdict == "FIRST" else "X"
-        is_pass = prediction == expected
-        status = "PASS" if is_pass else "FAIL"
-        reason = "" if is_pass else "결과 불일치"
-        return prediction, is_pass, status, reason
+        if expected == "UNDECIDED":
+            return prediction, "PASS", ""
+        return prediction, "FAIL", "동점 발생"
+
+    prediction = format_data_verdict(raw_verdict)
+    if prediction == expected:
+        return prediction, "PASS", ""
+    return prediction, "FAIL", "결과 불일치"
 
 
 # 사용자 입력 모드 판정명 변경 함수

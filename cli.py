@@ -52,6 +52,16 @@ def display_performance(time_ms):
     print(f"연산 시간(평균/{BENCHMARK_ITERATIONS}회): {time_ms:.6f} ms")
 
 
+# 필터 로드 상태 출력 함수
+def display_filter_load_status(filters):
+    draw_section_title("1. 필터 로드")
+    for size_key in sorted(filters.keys(), key=lambda x: int(x.split("_")[1])):
+        available_types = ", ".join(
+            filter_type.capitalize() for filter_type in filters[size_key].keys()
+        )
+        print(f"✓ {size_key:7} 필터 로드 완료 ({available_types})")
+
+
 # 패턴별 성능 분석 결과 상세 출력
 def display_pattern_analysis(
     label, cross_score, x_score, prediction, expected, status, reason=""
@@ -84,11 +94,6 @@ def display_summary_report(total, pass_cnt, fail_cnt, failures):
             print(f"- {f['key']}: {f['status']}({f['reason']})")
 
 
-# 데이터 로드 상태 출력 함수
-def display_loader_status(label, status_msg):
-    print(f"✓ {label:7} {status_msg}")
-
-
 # 섹션 제목 그리기
 def draw_section_title(title):
     draw_line()
@@ -99,8 +104,3 @@ def draw_section_title(title):
 # 메인 구분선 그리기
 def draw_line():
     print("=" * 30)
-
-
-# 보조 구분선 그리기
-def draw_sub_line():
-    print("-" * 30)
