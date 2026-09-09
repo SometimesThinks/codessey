@@ -1,9 +1,5 @@
 # Docker 컨테이너 웹 서비스 배포 기록
 
-- **실습 일자:** 2026-09-08
-- **범위:** Docker 설치·웹 배포·최종 실행 방식·포트 매핑·검증 증빙
-- **관련 문서:** [프로젝트 안내](../../README.md), [HTTPS 적용 기록](../03_HTTPS/https.md)
-
 ## 실행 정보
 
 
@@ -27,6 +23,16 @@ sudo docker run -d --name codyssey-web --restart unless-stopped \
   --mount type=bind,src=/etc/letsencrypt,dst=/etc/letsencrypt,readonly \
   nginx:stable-alpine
 ```
+
+| 옵션 | 의미 |
+|---|---|
+| `--restart unless-stopped` | 직접 중지한 경우를 제외하고 자동 재시작 |
+| `-p 80:80 -p 443:443` | EC2의 HTTP·HTTPS 포트를 컨테이너 포트에 연결 |
+| 첫 번째 `--mount` | EC2의 웹 파일을 Nginx 웹 경로에 연결 |
+| 두 번째 `--mount` | EC2의 Nginx 설정 파일을 컨테이너에 연결 |
+| 세 번째 `--mount` | EC2의 HTTPS 인증서를 컨테이너에 연결 |
+
+[EBS와 Docker 파일 연결 이해](../01_기본_구축/ebs-docker-explained.md) — `--mount` 옵션과 원본 파일 보존 방식 설명
 
 ## 설치와 웹 배포 과정
 
@@ -164,7 +170,3 @@ HTTPS 적용 후에도 퍼블릭 IP health의 HTTP 200 유지 확인
 </details>
 
 실행 이미지 RepoDigests 조회 결과 기록
-
-## 검증 결론
-
-컨테이너 Up, EC2 내부 HTTP 200, 외부 HTTP health 200 및 고정 응답 확인 완료

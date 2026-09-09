@@ -1,9 +1,5 @@
 # HTTPS 적용 및 인증서 갱신 기록
 
-- **실습 일자:** 2026-09-08
-- **범위:** Duck DNS 연결·인증서 발급·TLS 적용·갱신 자동화·검증 증빙
-- **관련 문서:** [프로젝트 안내](../../README.md), [Docker 실행 명령과 포트 매핑](../04_Docker/docker.md), [트러블 슈팅](../05_트러블_슈팅/troubleshooting.md)
-
 ## 적용 정보
 
 
@@ -19,6 +15,8 @@ sudo certbot certonly --webroot \
   -w /home/ubuntu/codyssey-web \
   -d codyssey.duckdns.org
 ```
+
+[HTTPS 인증서·TLS·SSL·Certbot 이해](https-tls-certbot-explained.md)
 
 ## 도메인 연결과 HTTPS 적용 과정
 
@@ -146,9 +144,3 @@ certbot renew --dry-run의 simulated renewals succeeded 확인
 </details>
 
 인증서 갱신 성공 후 실행할 deploy hook 폴더 생성 및 훅 구성. Nginx 검사·reload 훅 실행 성공과 certbot.timer active (waiting) 확인
-
-## 검증 결론
-
-- 인증서 검증 오류 없는 HTTPS health 200 및 브라우저 정상 표시 확인
-- 인증서 갱신 모의 시험 성공, reload 훅 수동 실행 성공 및 타이머 대기 상태 확인
-- Duck DNS 토큰 포함 원본 캡처의 공유 제외, 도메인 접속 결과를 통한 DNS 연결 증빙
