@@ -28,14 +28,14 @@
 B3-1/
 ├── README.md
 ├── docs/
-│   ├── 01_기본_구축/                 # 아키텍처·구축 흐름·IAM 설명
-│   ├── 02_접속_검증/                 # HTTP·HTTPS 검증
-│   ├── 03_HTTPS/                 # HTTPS 보너스
-│   ├── 04_Docker/                # Docker 보너스
-│   ├── 05_트러블_슈팅/                # 오류 해결 보고서
-│   └── 06_리소스_정리/                # 리소스 정리 체크리스트
-├── configs/                      # 캡처에서 전사한 실습 설정
-└── outputs/                      # 01_계정 ~ 13_리소스_정리 섹션별 캡처
+│   ├── 01_기본_구축/                   # 아키텍처·구축 흐름·라우팅·IAM 설명
+│   ├── 02_접속_검증/                   # 최종 설정 추가 증빙
+│   ├── 03_HTTPS/                       # HTTPS 보너스
+│   ├── 04_Docker/                      # Docker 보너스
+│   ├── 05_트러블_슈팅/                 # 오류 해결 보고서
+│   └── 06_리소스_정리/                 # 리소스 정리 체크리스트
+├── configs/                            # 캡처에서 전사한 실습 설정
+└── outputs/                            # 01_계정 ~ 13_리소스_정리 섹션별 캡처
 ```
 
 ## 수행 항목 체크리스트
@@ -62,7 +62,7 @@ B3-1/
 - [x] Security Group 인바운드 필요 포트만 허용
 - [x] HTTP 80번 포트 `0.0.0.0/0` 접근 허용
 - [x] SSH 22번 포트 개인 IP 또는 지정 IP 대역 접근 허용
-- [x] `0.0.0.0/0` 대상 전체 포트 `0-65535` 허용 규칙 미생성
+- [x] `0.0.0.0/0` 대상 인바운드 전체 포트 `0-65535` 허용 규칙 미생성
 
 ### IAM 최소 권한
 
@@ -118,19 +118,18 @@ B3-1/
 
 - 모든 리소스 AWS 서울 리전 `ap-northeast-2` 생성
 - 과제의 micro급 규모 유지, 실제 계정의 무료 혜택 부재에 따른 유료 사용
-- 루트 계정 사용 금지
-- 별도 IAM 사용자 또는 Role 콘솔 접근
+- 인프라 구축·운영 작업은 실습용 IAM 사용자로 수행
+- 루트 계정은 초기 IAM 준비 및 최종 IAM 정리 등 계정 관리에 사용
 - EC2, VPC, Security Group 실습 필요 권한 제한
 - `AdministratorAccess` 권한 사용 금지
 - 키페어 1개 생성 및 안전 보관
 - 키페어 재발급 불가 전제 관리
 - SSH 22번 포트 본인 개인 IP 또는 지정 IP 대역만 허용
 - 운영 또는 관리 목적 포트 방치 금지
-- `0.0.0.0/0` 대상 전체 포트 허용 규칙 생성 금지
+- `0.0.0.0/0` 대상 인바운드 전체 포트 허용 규칙 생성 금지
 - 생성 리소스 정리 대상 추적
 - 실습 종료 후 모든 리소스 종료 또는 삭제
 - 정리 대상: EC2, EBS Volume, Elastic IP, Internet Gateway, VPC
-- 생성 시 NAT Gateway, ELB/ALB, RDS 삭제 확인
 - 모든 리소스 삭제 후 Billing Dashboard 확인 권장
 
 ## 결과물
@@ -142,11 +141,19 @@ B3-1/
 - [아키텍처](docs/01_기본_구축/architecture.png)
 - [외부 요청과 응답 흐름](docs/01_기본_구축/request-flow.md)
 - [기본 구축 흐름](docs/01_기본_구축/basic-build-flow.md)
+- [IAM 개념과 실습 정책 JSON 이해](docs/01_기본_구축/iam-policy-explained.md)
+- [VPC·서브넷·CIDR 이해](docs/01_기본_구축/vpc-subnet-explained.md)
+- [라우팅 테이블과 IP 주소 범위 이해](docs/01_기본_구축/route-table-explained.md)
+- [인바운드·아웃바운드 규칙 이해](docs/01_기본_구축/security-group-rules-explained.md)
+- [SSH 키페어의 역할과 생성 이유](docs/01_기본_구축/ssh-key-pair-explained.md)
+- [EBS와 Docker 파일 연결 이해](docs/01_기본_구축/ebs-docker-explained.md)
 - [실습 설정 보관본](configs/README.md)
 
-#### 외부 접속 검증
+#### 접속 검증 및 설정 확인
 
-- [HTTP·HTTPS 응답과 스크린샷](docs/02_접속_검증/validation.md)
+- [HTTP 최종 검증](docs/04_Docker/docker.md)
+- [HTTPS 응답·브라우저 검증](docs/03_HTTPS/https.md)
+- [EC2·EBS·IAM 추가 확인](docs/02_접속_검증/validation.md)
 
 #### 리소스 정리
 
@@ -158,6 +165,7 @@ B3-1/
 
 ### HTTPS 보너스 기록
 
+- [HTTPS 인증서·TLS·SSL·Certbot 이해](docs/03_HTTPS/https-tls-certbot-explained.md)
 - [도메인 연결·인증서 적용·자동 갱신·검증 스크린샷](docs/03_HTTPS/https.md)
 
 ### Docker 보너스 기록
