@@ -83,13 +83,13 @@ B3-1/
 
 ### 운영 안정성 및 과금 방지
 
-- [ ] 실습 종료 후 생성 리소스 정리
-- [ ] EC2 종료 또는 삭제 상태 확인
-- [ ] EBS 볼륨 삭제 여부 확인
-- [ ] Elastic IP 사용 시 Release 여부 확인 — 기존 기록상 미생성, 목록 확인 후 해당 없음 기록
-- [ ] Internet Gateway Detach 및 삭제 여부 확인
-- [ ] VPC, Subnet, Route Table 삭제 여부 확인
-- [ ] 정리 결과 `docs/06_리소스_정리/cleanup-checklist.md` 기록
+- [x] 실습 종료 후 생성 리소스 정리
+- [x] EC2 종료 또는 삭제 상태 확인
+- [x] EBS 볼륨 삭제 여부 확인
+- [x] Elastic IP 사용 시 Release 여부 확인 — 기존 기록상 미생성, 목록 확인 후 해당 없음 기록
+- [x] Internet Gateway Detach 및 삭제 여부 확인
+- [x] VPC, Subnet, Route Table 삭제 여부 확인
+- [x] 정리 결과 `docs/06_리소스_정리/cleanup-checklist.md` 기록
 
 ### 보너스 과제
 

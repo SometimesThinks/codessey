@@ -136,18 +136,7 @@ HTTPS 도메인 접속과 Hello Cloud (Docker) 표시 확인
 
 certbot renew --dry-run의 simulated renewals succeeded 확인
 
-### 12-02 갱신 훅 폴더
-
-<details>
-<summary>12_02_갱신_훅_폴더 — 이미지 보기</summary>
-
-![12_02_갱신_훅_폴더](../../outputs/12_최종_검증/12_02_갱신_훅_폴더.png)
-
-</details>
-
-인증서 갱신 성공 후 실행할 deploy hook 폴더 생성
-
-### 12-03 갱신 훅 타이머
+### 12-03 갱신 훅 구성과 타이머
 
 <details>
 <summary>12_03_갱신_훅_타이머 — 이미지 보기</summary>
@@ -156,7 +145,7 @@ certbot renew --dry-run의 simulated renewals succeeded 확인
 
 </details>
 
-Nginx 검사·reload 훅 실행 성공과 certbot.timer active (waiting) 확인
+인증서 갱신 성공 후 실행할 deploy hook 폴더 생성 및 훅 구성. Nginx 검사·reload 훅 실행 성공과 certbot.timer active (waiting) 확인
 
 ## 검증 결론
 

@@ -355,20 +355,13 @@ EC2 배치에 앞선 사설 네트워크와 주소 범위 구성
 
 ### 07-01 개인 키 권한 설정과 SSH 접속
 
-<details>
-<summary>개인 키 권한 설정과 SSH 접속 — 이미지 보기</summary>
-
-![개인 키 권한 설정과 SSH 접속](../../outputs/07_SSH/07_01_SSH_접속.png)
-
-</details>
-
 - **수행 내용:** `chmod 400` 적용 후 `ubuntu@43.203.235.49` 접속 및 Ubuntu 26.04 LTS 배너 확인
 - **확인 포인트:** 프롬프트 `ubuntu@ip-10-0-1-205` 확인을 통한 EC2 내부 세션 진입 검증
 
 ### 07-02 EC2 인터넷 아웃바운드 확인
 
 <details>
-<summary>EC2 인터넷 아웃바운드 확인 — 이미지 보기</summary>
+<summary>SSH 접속 및 EC2 인터넷 아웃바운드 확인 — 이미지 보기</summary>
 
 ![EC2 인터넷 아웃바운드 확인](../../outputs/07_SSH/07_02_SSH_외부_통신.png)
 

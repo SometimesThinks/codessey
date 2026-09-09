@@ -97,29 +97,7 @@ Hello from Docker 출력으로 컨테이너 실행 검증
 
 정적 파일 생성 및 nginx:stable-alpine 이미지의 80:80 실행
 
-### 10-07 Docker Up
-
-<details>
-<summary>10_07_Docker_Up — 이미지 보기</summary>
-
-![10_07_Docker_Up](../../outputs/10_Docker/10_07_Docker_Up.png)
-
-</details>
-
-codyssey-web의 Up 상태와 80번 포트 매핑 확인
-
-### 10-08 Docker 내부 메인
-
-<details>
-<summary>10_08_Docker_내부_메인 — 이미지 보기</summary>
-
-![10_08_Docker_내부_메인](../../outputs/10_Docker/10_08_Docker_내부_메인.png)
-
-</details>
-
-EC2 localhost의 200 및 Hello Cloud (Docker) 확인
-
-### 10-09 Docker 내부 health
+### 10-09 Docker 실행 상태와 내부 응답
 
 <details>
 <summary>10_09_Docker_내부_health — 이미지 보기</summary>
@@ -128,7 +106,7 @@ EC2 localhost의 200 및 Hello Cloud (Docker) 확인
 
 </details>
 
-EC2 localhost/health의 200 및 OK 확인
+codyssey-web의 Up 상태 및 80:80 포트 매핑 확인. EC2 localhost의 200·Hello Cloud (Docker)와 localhost/health의 200·OK 확인
 
 ### 10-10 Docker 외부 HTTP
 
@@ -154,18 +132,7 @@ Mac 외부 메인·health 요청의 200 응답 확인
 
 ## HTTPS 적용 후 최종 검증
 
-### 12-04 Docker 최종 Up
-
-<details>
-<summary>12_04_Docker_최종_Up — 이미지 보기</summary>
-
-![12_04_Docker_최종_Up](../../outputs/12_최종_검증/12_04_Docker_최종_Up.png)
-
-</details>
-
-최종 컨테이너 Up 및 80:80·443:443 포트 매핑 확인
-
-### 12-05 내부 HTTP 최종
+### 12-05 최종 실행 상태와 내부 HTTP
 
 <details>
 <summary>12_05_내부_HTTP_최종 — 이미지 보기</summary>
@@ -174,7 +141,7 @@ Mac 외부 메인·health 요청의 200 응답 확인
 
 </details>
 
-HTTPS 적용 후에도 EC2 localhost의 HTTP 200 유지 확인
+최종 컨테이너 Up 및 80:80·443:443 포트 매핑 확인. HTTPS 적용 후에도 EC2 localhost의 HTTP 200 유지 확인
 
 ### 12-06 외부 HTTP 최종
 
