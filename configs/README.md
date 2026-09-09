@@ -16,6 +16,8 @@
 
 ## IAM 최종 정책
 
+[IAM 개념과 실습 정책 JSON 이해](../docs/01_기본_구축/iam-policy-explained.md) — 정책 항목과 허용 범위 설명
+
 [사용자 제공 최종 JSON](iam-policy.json) — 2026-09-09 대화로 제공된 정책 내용의 보관본. 붙여넣기 과정의 탭 HTML 표기와 별표 이스케이프 정규화
 
 EC2 서비스·서울 리전 제한 및 `ec2:GetSecurityGroupsForVpc` 포함 확인. `Resource: "*"` 사용으로 개별 실습 리소스까지의 제한은 미적용. [최종 연결 목록](../outputs/02_IAM/02_07_IAM_권한_확인.png)에서 본 정책과 `IAMUserChangePassword`의 직접 연결 확인
