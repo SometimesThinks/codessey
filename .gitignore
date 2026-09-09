@@ -1,4 +1,1 @@
 .DS_Store
-# 공유 제외 캡처
-/outputs/private/
-/outputs/other/
